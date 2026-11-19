@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reporte de compras</title>
+  <link rel="stylesheet" href="reporte.css">
+  <style>
+    :root{--ink:#1b2d49;--muted:#657b96;--line:#cfdae7;--green:#214488;--lime:#fff;--paper:#eff4f9}
+    body{background:#eff4f9}.topbar{background:#fff;border-bottom-color:#cbd9e9}.brand-mark{background:#203f81;border-radius:4px}.brand small{color:#788ca4}
+    .upload{background:#13a453}.upload:hover{background:#0c843f}.heading{border-bottom:2px solid #cbd9e9}.heading h1,.section-title h2{color:#1a2e4d}.heading-accent{color:#bdcce1}.heading-accent span{color:#7692ba}
+    .filter-grid select,.filter-grid input,.status-menu summary,.editable-cell input,.secondary,.columns-menu summary{border-color:#c9d6e5;color:#203c71;background:#fff}.filter-grid select,.filter-grid input{outline-color:#315a9f}.status-menu summary::after{color:#214488}.filter-grid .status-options input,.column-list input{accent-color:#214488}
+    .status-options,.menu-content{border-color:#cfdae7;box-shadow:0 8px 22px #1a2e4d1a}.secondary:hover:not(:disabled){background:#e8eff8}.table-wrap,.empty{border-color:#cfdae7;border-radius:6px;box-shadow:0 1px 3px #1b2d490d}
+    th,.detail-table th{background:#f3f6fa;color:#526b89}th,td{border-bottom-color:#e3eaf2}.order-button{color:#214488}.order-button span{color:#7390b5}.order-row:hover{background:#f4f8fd}.detail-cell{background:#f6f9fc}.detail-scroll{border-color:#cfdae7}.empty-icon{background:#e3edfa;color:#214488}footer{color:#8193aa}
+    body{font-size:13px;background:#eff4f9}
+    .topbar{height:60px;padding:0 24px}.brand{font-size:13px}.brand-mark{width:30px;height:30px;font-size:17px}.brand small{font-size:9px}
+    .upload,.top-actions .secondary{height:34px;padding:0 14px;display:inline-flex;align-items:center;font-size:12px;border-radius:4px}
+    main{max-width:none;padding:0 24px}.dashboard-head{display:grid;grid-template-columns:290px minmax(0,1fr);gap:30px;align-items:start;padding:28px 0 20px;border-bottom:2px solid #cbd9e9}
+    .heading{display:block;padding:0;border:0}.heading h1{font-size:24px;line-height:1.2;text-transform:uppercase}.heading .eyebrow{margin-bottom:8px;font-size:10px}.heading .subtle{font-size:12px;line-height:1.4;margin-top:8px;overflow-wrap:anywhere}.heading-accent{display:none}
+    .filters{padding:0;border:0;min-width:0}.filter-grid{display:flex;flex-wrap:wrap;align-items:end;gap:8px;margin:0}.filter-grid>label,.filter-grid>.filter-field{display:flex;flex-direction:column;gap:5px;flex:1 1 155px;min-width:130px;font-size:11px;color:#526b89}.filter-grid>label:first-child{flex-basis:205px}.filter-grid>label:nth-last-of-type(2){flex-basis:190px}.filter-grid select,.filter-grid input,.status-menu summary{height:34px;font-size:12px;font-weight:600}.status-menu summary{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.status-options{top:38px;right:auto;min-width:220px}.filter-grid .secondary{height:34px;padding:0 14px;font-size:12px;white-space:nowrap}
+    .results{padding-top:20px}.results-heading{margin-bottom:12px}.section-title span{color:#204387}.section-title h2{font-size:15px}.results-actions{gap:10px}.count{background:#fff;border:1px solid #cfdae7;border-radius:4px;padding:8px 11px;color:#536d8f}.columns-menu summary{padding:9px 12px;color:#214488}.table-wrap{border-radius:6px}.table-wrap>table>thead th{background:#f2f5f9;color:#526b89;font-size:10px}.table-wrap>table>tbody>tr>td{padding:10px 12px}.editable-cell input{height:32px}.detail-cell{padding:0 12px 14px 34px!important}.detail-header{color:#214488}.empty{padding:50px 20px}footer{padding:24px 0}
+    @media(max-width:850px){.topbar{height:auto;min-height:60px;padding:12px 20px}main{padding:0 20px}.dashboard-head{grid-template-columns:1fr;gap:18px;padding:22px 0 18px}.heading h1{font-size:22px}.filter-grid{display:flex}.filter-grid>label,.filter-grid>.filter-field{flex:1 1 180px}}
+    @media(max-width:520px){.topbar{padding:12px 16px}.top-actions{width:auto}.top-actions .upload,.top-actions .secondary{height:34px;padding:0 10px}main{padding:0 16px}.dashboard-head{gap:16px}.filter-grid>label,.filter-grid>.filter-field{flex:1 1 140px;min-width:0}.filter-grid .secondary{flex:1 1 140px}.results-heading{align-items:flex-start;flex-direction:column}.results-actions{width:100%;justify-content:space-between}.count{font-size:11px}}
+  </style>
+  <script defer src="xlsx.full.min.js"></script>
+  <script defer src="reporte.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">C</span><span>COMPRAS <small>CONTROL DE ÓRDENES</small></span></div>
+    <div class="top-actions"><label class="upload"><span>Abrir archivo Excel</span><input id="file" type="file" accept=".xlsx,.xls,.xlsm" disabled></label><button id="download" class="secondary" disabled>Descargar Excel</button></div>
+  </header>
+  <main>
+    <div class="dashboard-head">
+    <div class="heading"><div><p class="eyebrow">SEGUIMIENTO DE COMPRAS</p><h1>Órdenes y pedidos</h1><p id="file-name" class="subtle">Ningún archivo seleccionado</p><p id="storage-status" class="subtle" role="status">Conectando con la base de seguimiento...</p></div><div class="heading-accent">OC <span>/</span> OS</div></div>
+    <section class="filters" aria-label="Filtros del reporte">
+      <div class="filter-grid">
+        <label>Almacén pedido<select id="warehouse" disabled><option value="">Todos los almacenes</option></select></label>
+        <div class="filter-field"><span>Estado OC/OS</span><details id="status-menu" class="status-menu"><summary id="status-label">Todos los estados</summary><div id="status" class="status-options"></div></details></div>
+        <label>Tipo de OC<select id="order-type" disabled><option value="">Todos los tipos</option><option value="COMPRA">Compra</option><option value="SERVICIO">Servicio</option></select></label>
+        <label>Documento de compra<select id="order-presence" disabled><option value="">Con y sin OC</option><option value="con">Con OC</option><option value="sin">Sin OC</option></select></label>
+        <label>Pedido a almacén / compras<select id="request-type" disabled><option value="">Todos los pedidos</option><option value="almacen">Pedidos a almacén</option><option value="compras">Pedidos a compras</option></select></label>
+        <label>Buscar orden o proveedor<input id="search" type="search" placeholder="Número o proveedor" disabled></label>
+        <button id="clear" class="secondary" disabled>Limpiar filtros</button>
+      </div>
+    </section>
+    </div>
+    <section class="results" aria-label="Resultados del reporte">
+      <div class="results-heading"><div class="section-title"><span>02</span><h2>Reporte de órdenes</h2></div><div class="results-actions"><span id="count" class="count">0 órdenes</span><details id="columns-menu" class="columns-menu"><summary>Columnas <span>▾</span></summary><div class="menu-content"><div class="menu-title">Columnas del resumen</div><div id="summary-columns" class="column-list"></div><div class="menu-title detail-title">Columnas del detalle</div><div id="detail-columns" class="column-list"></div></div></details></div></div>
+      <div id="message" class="empty"><div class="empty-icon">↗</div><h3>Selecciona el archivo de compras</h3><p>Abre el archivo Excel para consultar las órdenes y sus pedidos.</p></div>
+      <div id="table-wrap" class="table-wrap" hidden><table><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div>
+    </section>
+    <footer><span>REPORTE DE COMPRAS</span><span id="save-status" aria-live="polite">Los datos se procesan en este equipo</span></footer>
+  </main>
+</body>
+</html>

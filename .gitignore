@@ -1,0 +1,6 @@
+*.xlsx
+*.xls
+*.xlsm
+~$*
+seguimiento-datos.json
+seguimiento-datos.json.tmp
